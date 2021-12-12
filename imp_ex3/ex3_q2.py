@@ -6,7 +6,7 @@ EX3 q2
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
-from numpy.core.fromnumeric import shape
+
 
 def create_masks(shape):
     
@@ -38,15 +38,15 @@ def create_masks(shape):
 
 def fft(img, masks):
     fft_img = np.fft.fft2(img)
-    res = []
+    images_fft = []
 
     for i, m in enumerate(masks):
         img_mask = np.multiply(fft_img, m)
         shifted = np.fft.ifftshift(img_mask)
         fft_final = np.fft.ifft2(shifted)
-        res.append(np.uint16(np.abs(fft_final)))
-        
-    return res
+        images_fft.append(np.uint16(np.abs(fft_final)))
+
+    return images_fft
 
 
 if __name__ == '__main__':
@@ -59,6 +59,7 @@ if __name__ == '__main__':
     for r in range(2):
         for c in range(4):
             x[c,r].imshow(masks[m], cmap = "gray")
+            x[c,r].axis("off")
             m+=1
     plt.show()
 
@@ -69,5 +70,6 @@ if __name__ == '__main__':
     for r in range(2):
         for c in range(4):
             x[c,r].imshow(fft_images[f_img], cmap = "gray")
+            x[c,r].axis("off")
             f_img+=1
     plt.show()

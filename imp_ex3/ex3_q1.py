@@ -66,7 +66,7 @@ if __name__ == '__main__':
     img_erode = cv.erode(img_clear, kernel, iterations=1)
     outlines =img_clear - img_erode
 
-    filled = region_filling(outlines, show_proccess=False)
+    filled = region_filling(outlines, show_proccess= False)
    
     f, x = plt.subplots(1, 3)
     x[0].imshow(img, cmap = "gray")
