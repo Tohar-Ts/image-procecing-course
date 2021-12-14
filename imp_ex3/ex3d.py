@@ -25,6 +25,8 @@ def hough_circle(img):
 if __name__ == '__main__':
     img = cv.imread("fimage.png", cv.IMREAD_GRAYSCALE)
     circle = hough_circle(img)
+
+
     f,x = plt.subplots(1, 2)
     x[0].imshow(img, cmap = "gray")
     x[0].set_title("original image")
@@ -33,4 +35,5 @@ if __name__ == '__main__':
     x[1].imshow(circle)
     x[1].set_title("marked circle")
     x[1].axis("off")
+    # plt.savefig('find circle Q4.png')
     plt.show()

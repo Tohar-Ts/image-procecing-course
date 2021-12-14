@@ -14,7 +14,7 @@ def use_threashold(img, threashold = 127):
     img[img < threashold] = 0
     return img
 
-def fix_brightness(img, kernel_size = 40):
+def brightness_equalization(img, kernel_size = 40):
     """fixing and equalizing the brightness to ease the use of threshold"""
     kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(kernel_size,kernel_size))
     img_grayscale = cv.morphologyEx(img, cv.MORPH_OPEN, kernel)
@@ -50,21 +50,28 @@ def region_filling(outlines, show_proccess = True):
 
     return np.bitwise_not(filled)
     
+def find_outlines(img):
+    #find outlines using erousion
+    kernel = np.ones((5,5),np.uint8)
+    img_erode = cv.erode(img, kernel, iterations=1)
+    outlines = img - img_erode
+    return outlines
+
+def clean_noise(img):
+    #clean noises using open:
+    kernel = np.ones((10,10),np.uint8)
+    img_clean = cv.morphologyEx(img_th, cv.MORPH_OPEN, kernel)
+    return img_clean
+
 if __name__ == '__main__':
-    img = cv.imread("rice.jpg", cv.IMREAD_GRAYSCALE)
-    # img= plt.imread("rice.jpg")
-    img_fixed_brithness = fix_brightness(img, 60)
+    img = cv.imread("rice.png", cv.IMREAD_GRAYSCALE)
+    img_fixed_brithness = brightness_equalization(img, 60)
 
     img_th = use_threashold(img_fixed_brithness, 50)
     
-    #clean noises using open:
-    kernel = np.ones((10,10),np.uint8)
-    img_clear = cv.morphologyEx(img_th, cv.MORPH_OPEN, kernel)
+    img_clean = clean_noise(img_th)
 
-    #find outlines using erousion
-    kernel = np.ones((5,5),np.uint8)
-    img_erode = cv.erode(img_clear, kernel, iterations=1)
-    outlines =img_clear - img_erode
+    outlines = find_outlines(img_clean)
 
     filled = region_filling(outlines, show_proccess= False)
    
@@ -81,4 +88,5 @@ if __name__ == '__main__':
     x[2].set_title("image filled")
     x[2].axis("off")
 
+    # plt.savefig('rice Q1 res')
     plt.show()
